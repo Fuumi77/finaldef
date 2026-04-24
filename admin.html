@@ -932,7 +932,22 @@
                     });
                     
                     localStorage.setItem('reservationHistory', JSON.stringify(hist));
-                    // re-render UI
+                    // --- SYNC TO SUPABASE CLOUD ---
+            try {
+                fetch('/reserve', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: name,
+                        date: date,
+                        time: time,
+                        table: table
+                    })
+                });
+            } catch(err) {
+                console.error("Cloud sync failed:", err);
+            }
+            // ------------------------------
                     renderDashboard(); // Re-render the whole dashboard state!
                 }
                 window.closeEditModal();
