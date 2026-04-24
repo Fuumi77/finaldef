@@ -447,6 +447,22 @@
                 completedAt:     new Date().toISOString()
             });
             localStorage.setItem('reservationHistory', JSON.stringify(hist));
+            // --- SYNC TO SUPABASE CLOUD ---
+            try {
+                fetch('/reserve', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: cName,
+                        date: aDate,
+                        time: aTime,
+                        table: bTable
+                    })
+                });
+            } catch(err) {
+                console.error("Cloud sync failed:", err);
+            }
+            // ------------------------------
         }
 
         // ── Manual fallback ──
