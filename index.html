@@ -273,7 +273,27 @@
         }
 
         (function initLocalLogin() {
-            const storedName = localStorage.getItem('loggedInUserName');
+            let storedName = localStorage.getItem('loggedInUserName');
+
+            // --- SMART EMAIL-TO-NAME CONVERTER ---
+            if (storedName && storedName.includes('@')) {
+                // 1. Cut off everything after the @ symbol
+                let namePart = storedName.split('@')[0];
+                
+                // 2. Remove any numbers (e.g., aldus132 -> aldus)
+                namePart = namePart.replace(/[0-9]/g, '');
+                
+                // 3. Replace dots or underscores with spaces (john.doe -> john doe)
+                namePart = namePart.replace(/[\._]/g, ' ');
+                
+                // 4. Capitalize the first letter of each word
+                storedName = namePart.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ').trim();
+                
+                // 5. Save the cleaned name back to storage so it stays fixed everywhere!
+                localStorage.setItem('loggedInUserName', storedName);
+            }
+            // -------------------------------------
+
             const nameInput = document.getElementById('customer-name-input');
             const loggedInLabel = document.getElementById('logged-in-user');
             const logoutBtn = document.getElementById('logout-btn');
